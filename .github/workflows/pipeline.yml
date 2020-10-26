@@ -12,9 +12,14 @@ jobs:
     steps:
       - name: Checkout our code
         uses: actions/checkout@v2
-      - run: |
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Run node tests
+        run: |
           cd serverside
-          ls
+          node testAllQuotes.js
 
   build:
     name: build
