@@ -8,7 +8,6 @@ function logPass(tName){
 }
 function logFail(tName){
     console.log("FAIL - " + tName)
-    throw new Error("FAIL - " + tName);
 }
 // T01 - Search for a quote and suceed
 let aq01 = new AllQuotes();
@@ -19,6 +18,7 @@ if (res01.search("Before you embark") > -1){
     logPass("T01");
 } else {
     logFail("T01");
+    throw new Error("T01");
 }
 // T02 - Search for a quote and fail
 let res02 = aq01.findQuote("missing");
@@ -26,6 +26,7 @@ if (res02.search("No matching quote") > -1){
     logPass("T02");
 } else {
     logFail("T02");
+    throw new Error("T02");
 }
 // T03 - Load from file
 let aq03 = new AllQuotes();
@@ -35,4 +36,5 @@ if (res03.search("indicate where smiles have beenz") > -1){
     logPass("T03");
 } else {
     logFail("T03");
+    throw new Error("T03");
 }
