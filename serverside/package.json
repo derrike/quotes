@@ -1,0 +1,14 @@
+{
+  "name": "serverside",
+  "version": "1.0.0",
+  "description": "Server side express server for the quoteServer project. See Evernote 20200709 - Software Development for the Continuous SE course",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
