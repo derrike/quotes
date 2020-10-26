@@ -1,0 +1,38 @@
+---
+# GitHub Actions Workflow CI/CD
+#
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout our code
+        uses: actions/checkout@v2
+      - run: |
+          cd serverside
+          ls
+
+  build:
+    name: build
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout our code
+        uses: actions/checkout@v2
+      - run: |
+          ls
+          echo "build stage"
+
+  deploy:
+    name: deploy
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      -  run: echo "deploy stage"
