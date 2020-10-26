@@ -17,9 +17,8 @@ jobs:
         with:
           node-version: 14.x
       - name: Run node tests
-        run: |
-          cd serverside
-          node testAllQuotes.js
+        working-directory: ./serverside
+        run: node testAllQuotes.js
 
   build:
     name: build
