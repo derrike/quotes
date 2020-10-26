@@ -30,7 +30,7 @@ if (res02.search("No matching quote") > -1){
 let aq03 = new AllQuotes();
 aq03.loadFromFile("../data/3_quotes.csv");
 let res03 = aq03.findQuote("smiles");
-if (res03.search("indicate where smiles have been") > -1){
+if (res03.search("indicate where smiles have beenz") > -1){
     logPass("T03");
 } else {
     logFail("T03");
