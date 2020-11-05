@@ -20,17 +20,17 @@ jobs:
         working-directory: ./app/serverside
         run: node testAllQuotes.js
 
-  # build:
-  #   name: build
-  #   needs: test
-  #   runs-on: ubuntu-latest
+  build:
+    name: build
+    needs: test
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout our code
-  #       uses: actions/checkout@v2
-  #     - run: |
-  #         ls
-  #         echo "build stage"
+    steps:
+      - name: Checkout our code
+        uses: actions/checkout@v2
+      - run: |
+          ls
+          echo "build stage"
 
   system:
     name: system
