@@ -57,7 +57,7 @@ jobs:
           ls
           pwd
           terraform output --json > ../verify/files/terraform.json
-          sed '1d' ../verify/files/terraform.json
+          sed -i '1d' ../verify/files/terraform.json
       - name: Run InSpec tests
         working-directory: ./terraform
         env: 
