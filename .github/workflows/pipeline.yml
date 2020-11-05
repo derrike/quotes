@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Run node tests
-        working-directory: ./serverside
+        working-directory: ./app/serverside
         run: node testAllQuotes.js
 
   build:
