@@ -19,6 +19,8 @@ jobs:
       - name: Run node tests
         working-directory: ./app/serverside
         run: node testAllQuotes.js
+      - name: test jq
+        run: jq --help
 
   build:
     name: build
