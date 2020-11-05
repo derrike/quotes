@@ -54,7 +54,12 @@ jobs:
         run: |
           terraform init
           terraform plan
-
+          terraform output --json > ../verify/files/terraform.json
+      - name: Run InSpec tests
+        working-directory: ./terraform/verify
+        run: |
+          curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+          inspec exec .
   deploy:
     name: deploy
     needs: [test, build]
