@@ -56,12 +56,13 @@ jobs:
           terraform plan
           ls
           pwd
-          terraform output --json > terraform.json
+          terraform output --json > ../terraform.json
           ls
       - name: Run InSpec tests
         working-directory: ./terraform
         run: |
           ls
+          echo '--'
           ls ./test
           cp ./test/terraform.json ./verify/files/terraform.json
           curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
