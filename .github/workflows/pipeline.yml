@@ -48,7 +48,6 @@ jobs:
           aws-region: us-east-1
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
-      - run: aws s3 ls
       - name: Create Terraform VM
         working-directory: ./terraform
         run: |
@@ -57,10 +56,13 @@ jobs:
           terraform plan
           ls
           pwd
-          terraform output --json > ../verify/files/terraform.json
+          terraform output --json > terraform.json
+          ls
       - name: Run InSpec tests
         working-directory: ./terraform
         run: |
+          ls
+          ls ./terraform
           curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
           inspec exec verify/
   deploy:
