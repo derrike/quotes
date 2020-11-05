@@ -51,7 +51,9 @@ jobs:
       - run: aws s3 ls
       - name: Create Terraform VM
         working-directory: ./terraform/test
-        run: terraform plan
+        run: |
+          terraform init
+          terraform plan
 
   deploy:
     name: deploy
