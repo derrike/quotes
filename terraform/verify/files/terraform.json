@@ -1,7 +1,0 @@
-{
-  "instance_ip_addr": {
-    "sensitive": false,
-    "type": "string",
-    "value": "18.212.56.133"
-  }
-}
