@@ -65,7 +65,8 @@ jobs:
         run: |
           ls
           echo '--'
-          ls ./verify
+          cat verify/files/terraform.json
+          echo '--'
           curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
           inspec exec verify/
   deploy:
