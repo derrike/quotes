@@ -62,12 +62,14 @@ jobs:
           pwd
           terraform output --json
           sed -i '1d' ../verify/files/terraform.json
+          terraform output --json | jq .instance_ip_addr.value | tr -d \"
       - name: Run InSpec tests
         working-directory: ./terraform
         env: 
           CHEF_LICENSE: accept-no-persist
         run: |
           cd test
+          terraform output --json | jq .instance_ip_addr.value | tr -d \"
           export AWS_IP=$(terraform output --json | jq .instance_ip_addr.value | tr -d \")
           ls
           echo "AWS IP: $AWS_IP"
