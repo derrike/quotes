@@ -54,6 +54,8 @@ jobs:
         run: |
           terraform init
           terraform plan
+          ls
+          pwd
           terraform output --json > ../verify/files/terraform.json
       - name: Run InSpec tests
         working-directory: ./terraform/verify
