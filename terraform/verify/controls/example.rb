@@ -1,11 +1,12 @@
 # copyright: 2018, The Authors
 
 # load data from Terraform output
-content = inspec.profile.file("terraform.json")
-params = JSON.parse(content)
+# content = inspec.profile.file("terraform.json")
+# params = JSON.parse(content)
+INSTANCE_IP = ENV['AWS_IP']
 
 # store ip in variable
-INSTANCE_IP = params['instance_ip_addr']['value']
+# INSTANCE_IP = params['instance_ip_addr']['value']
 
 describe http("http://#{INSTANCE_IP}:3000") do
   its('status') { should eq 200 }
