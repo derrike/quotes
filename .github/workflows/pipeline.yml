@@ -19,8 +19,6 @@ jobs:
       - name: Run node tests
         working-directory: ./app/serverside
         run: node testAllQuotes.js
-      - name: test jq
-        run: jq --help
 
   build:
     name: build
@@ -62,6 +60,7 @@ jobs:
           pwd
           terraform output --json >  ../terraform.json
           sed -i '1d' ../terraform.json
+          sed -i '8,$d' ../terraform.json
           cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
       - name: Run InSpec tests
         working-directory: ./terraform
