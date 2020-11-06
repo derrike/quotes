@@ -56,27 +56,27 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
         working-directory: ./terraform/test
-        env:
-          TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
+        # env:
+        #   TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+        #   TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
         run: |
           ls ~/.ssh
           terraform init
-      #     terraform apply --auto-approve
-      #     terraform output --json > ../verify/files/terraform.json
-      #     sed -i '1d' ../verify/files/terraform.json
-      #     sed -i '8,$d' ../verify/files/terraform.json
-      # - name: Setup InSpec
-      #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-      # - name: Run InSpec tests
-      #   working-directory: ./terraform/verify
-      #   env: 
-      #     CHEF_LICENSE: accept-no-persist
-      #   run: inspec exec .
-      # - name: Terraform Destroy
-      #   if: ${{ always() }}
-      #   working-directory: ./terraform/test
-      #   run: terraform destroy --auto-approve
+          terraform apply --auto-approve
+          terraform output --json > ../verify/files/terraform.json
+          sed -i '1d' ../verify/files/terraform.json
+          sed -i '8,$d' ../verify/files/terraform.json
+      - name: Setup InSpec
+        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+      - name: Run InSpec tests
+        working-directory: ./terraform/verify
+        env: 
+          CHEF_LICENSE: accept-no-persist
+        run: inspec exec .
+      - name: Terraform Destroy
+        if: ${{ always() }}
+        working-directory: ./terraform/test
+        run: terraform destroy --auto-approve
   deploy:
     name: deploy
     needs: [test, build, system]
