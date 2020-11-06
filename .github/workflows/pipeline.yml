@@ -38,9 +38,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout our code
+      - name: Checkout code
         uses: actions/checkout@v2    
-      - name: Configure AWS credentials
+      - name: Setup AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -50,12 +50,12 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-      - name: Create Terraform VM
+      - name: Terraform Apply
         working-directory: ./terraform/test
         run: |
           terraform init
-          terraform plan
-          terraform output --json >  ../verify/files/terraform.json
+          terraform apply --auto-approve
+          terraform output --json > ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
       - name: Run InSpec tests
@@ -64,32 +64,12 @@ jobs:
           CHEF_LICENSE: accept-no-persist
         run: |
           inspec exec .
-      # - name: Create Terraform VM
-      #   working-directory: ./terraform
-      #   run: |
-      #     cd test
-      #     terraform init
-      #     terraform plan
-      #     ls
-      #     pwd
-      #     terraform output --json >  ../terraform.json
-      #     sed -i '1d' ../terraform.json
-      #     sed -i '8,$d' ../terraform.json
-      #     cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
-      # - name: Run InSpec tests
-      #   working-directory: ./terraform
-      #   env: 
-      #     CHEF_LICENSE: accept-no-persist
-      #   run: |
-      #     cd test
-      #     cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
-      #     export AWS_IP=$(cat ../terraform.json | jq .instance_ip_addr.value | tr -d \")
-      #     ls
-      #     echo "AWS IP: $AWS_IP"
-      #     inspec exec ../verify
+      - name: Terraform Destroy
+        working-directory: ./terraform/test
+        run: terraform destroy --auto-approve
   deploy:
     name: deploy
-    needs: [test, build]
+    needs: [test, build, system]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     
