@@ -62,8 +62,7 @@ jobs:
         working-directory: ./terraform/verify
         env: 
           CHEF_LICENSE: accept-no-persist
-        run: |
-          inspec exec .
+        run: inspec exec .
       - name: Terraform Destroy
         working-directory: ./terraform/test
         run: terraform destroy --auto-approve
