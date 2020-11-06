@@ -10,6 +10,11 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "ssh_private_key" {
+  type = string
+  description = "the ssh key to aws instance"
+}
+
 resource "aws_instance" "test" {
   ami                  = "ami-069098bd859abd964"
   instance_type        = "t2.micro"
@@ -28,6 +33,19 @@ resource "aws_instance" "test" {
     systemctl enable quotes.service
     systemctl start quotes.service
   EOF
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'started'"
+    ]
+
+    connection {
+      type        = "ssh"
+      host        = self.public_ip
+      user        = "ec2-user"
+      private_key = var.ssh_private_key
+    }
+  }
 
   tags = {
     name = "quotes-test"

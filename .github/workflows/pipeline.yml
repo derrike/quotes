@@ -50,6 +50,8 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
         working-directory: ./terraform/test
+        env:
+          TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
         run: |
           terraform init
           terraform apply --auto-approve
