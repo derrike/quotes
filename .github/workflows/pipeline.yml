@@ -56,23 +56,38 @@ jobs:
           cd test
           terraform init
           terraform plan
-          ls
-          pwd
-          terraform output --json >  ../terraform.json
-          sed -i '1d' ../terraform.json
-          sed -i '8,$d' ../terraform.json
-          cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
+          terraform output --json >  ../verify/files/terraform.json
+          sed -i '1d' ../verify/files/terraform.json
+          sed -i '8,$d' ../verify/files/terraform.json
       - name: Run InSpec tests
         working-directory: ./terraform
         env: 
           CHEF_LICENSE: accept-no-persist
         run: |
-          cd test
-          cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
-          export AWS_IP=$(cat ../terraform.json | jq .instance_ip_addr.value | tr -d \")
-          ls
-          echo "AWS IP: $AWS_IP"
-          inspec exec ../verify
+          inspec exec verify
+      # - name: Create Terraform VM
+      #   working-directory: ./terraform
+      #   run: |
+      #     cd test
+      #     terraform init
+      #     terraform plan
+      #     ls
+      #     pwd
+      #     terraform output --json >  ../terraform.json
+      #     sed -i '1d' ../terraform.json
+      #     sed -i '8,$d' ../terraform.json
+      #     cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
+      # - name: Run InSpec tests
+      #   working-directory: ./terraform
+      #   env: 
+      #     CHEF_LICENSE: accept-no-persist
+      #   run: |
+      #     cd test
+      #     cat ../terraform.json | jq .instance_ip_addr.value | tr -d \"
+      #     export AWS_IP=$(cat ../terraform.json | jq .instance_ip_addr.value | tr -d \")
+      #     ls
+      #     echo "AWS IP: $AWS_IP"
+      #     inspec exec ../verify
   deploy:
     name: deploy
     needs: [test, build]
