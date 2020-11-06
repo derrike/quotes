@@ -52,7 +52,9 @@ jobs:
         working-directory: ./terraform/test
         env:
           TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
         run: |
+          echo $TF_VAR_ssh_fake_key
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json

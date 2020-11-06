@@ -34,6 +34,9 @@ resource "aws_instance" "test" {
   #   systemctl start quotes.service
   # EOF
 
+  # provisioner "local-exec" {
+  #   command = "nc -v ${self.public_ip} 3000"
+  # }
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir /var/lib/quotes",

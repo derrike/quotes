@@ -1,0 +1,8 @@
+---
+- name: configure quote server
+  hosts: all
+  tasks:
+    - name: create a file
+      file:
+        path: /home/ec2-user/ansible.txt
+        state: touch
