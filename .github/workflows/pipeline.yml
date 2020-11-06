@@ -51,20 +51,19 @@ jobs:
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Create Terraform VM
-        working-directory: ./terraform
+        working-directory: ./terraform/test
         run: |
-          cd test
           terraform init
           terraform plan
           terraform output --json >  ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
       - name: Run InSpec tests
-        working-directory: ./terraform
+        working-directory: ./terraform/verify
         env: 
           CHEF_LICENSE: accept-no-persist
         run: |
-          inspec exec verify
+          inspec exec .
       # - name: Create Terraform VM
       #   working-directory: ./terraform
       #   run: |
