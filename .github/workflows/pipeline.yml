@@ -73,9 +73,6 @@ jobs:
           export AWS_IP=$(cat ../verify/files/terraform.json | jq .instance_ip_addr.value | tr -d \")
           ls
           echo "AWS IP: $AWS_IP"
-          echo '--'
-          cat verify/files/terraform.json
-          echo '--'
           inspec exec ../verify
   deploy:
     name: deploy
