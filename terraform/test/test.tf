@@ -21,22 +21,30 @@ resource "aws_instance" "test" {
   key_name             = "dan16"
   security_groups      = ["ssh3000"]
   iam_instance_profile = "tfQuotesEC2S3Profile"
-  user_data            = <<EOF
-    #!/bin/bash
-    mkdir /var/lib/quotes
-    cd /var/lib/quotes
-    aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .
-    tar -xvf deployment.tar.gz
-    rm deployment.tar.gz
-    echo "${file("../common/systemd-quotes.service")}" > /lib/systemd/system/quotes.service
-    systemctl daemon-reload
-    systemctl enable quotes.service
-    systemctl start quotes.service
-  EOF
+  # user_data            = <<EOF
+  #   #!/bin/bash
+  #   mkdir /var/lib/quotes
+  #   cd /var/lib/quotes
+  #   aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .
+  #   tar -xvf deployment.tar.gz
+  #   rm deployment.tar.gz
+  #   echo "${file("../common/systemd-quotes.service")}" > /lib/systemd/system/quotes.service
+  #   systemctl daemon-reload
+  #   systemctl enable quotes.service
+  #   systemctl start quotes.service
+  # EOF
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'started'"
+      "sudo mkdir /var/lib/quotes",
+      "cd /var/lib/quotes",
+      "sudo aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .",
+      "sudo tar -xvf deployment.tar.gz",
+      "sudo rm deployment.tar.gz",
+      "echo '${file("../common/systemd-quotes.service")}' | sudo tee /lib/systemd/system/quotes.service",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable quotes.service",
+      "sudo systemctl start quotes.service"
     ]
 
     connection {
