@@ -60,6 +60,8 @@ jobs:
           terraform plan
           ls
           pwd
+          terraform output --json >  ../verify/files/terraform.json
+          sed -i '1d' ../verify/files/terraform.json
           cat ../verify/files/terraform.json | jq .instance_ip_addr.value | tr -d \"
       - name: Run InSpec tests
         working-directory: ./terraform
