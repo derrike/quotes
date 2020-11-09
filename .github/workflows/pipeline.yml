@@ -76,7 +76,7 @@ jobs:
           export IP=$(cat inventory)
           cat inventory
           ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami
-          apt install ansible -y
+          sudo apt install ansible -y
           ansible-playbook playbook.yml -u ec2-user -i inventory
       # - name: Setup InSpec
       #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
