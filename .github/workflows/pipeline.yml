@@ -69,11 +69,13 @@ jobs:
           cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
       - name: Run Ansible
         working-directory: ./terraform/ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           ls
           export IP=$(cat inventory)
           cat inventory
-          ssh ec2-user@$IP whoami
+          ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami
           apt install ansible -y
           ansible-playbook playbook.yml -u ec2-user -i inventory
       # - name: Setup InSpec
