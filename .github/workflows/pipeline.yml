@@ -63,10 +63,14 @@ jobs:
           ls ~/.ssh
           terraform init
           terraform apply --auto-approve
-          terraform output -no-color -json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
+          terraform output --json > ../ansible/terraform.json
+          sed -i '1d' ../ansible/terraform.json
+          sed -i '8,$d' ../ansible/terraform.json
+          cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
       - name: Run Ansible
         working-directory: ./terraform/ansible
         run: |
+          ls
           export IP=$(cat inventory)
           ssh ec2-user@$IP whoami
           apt install ansible -y
