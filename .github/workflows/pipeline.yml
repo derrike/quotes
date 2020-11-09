@@ -63,21 +63,25 @@ jobs:
           ls ~/.ssh
           terraform init
           terraform apply --auto-approve
-          terraform output --json > ../verify/files/terraform.json
-          sed -i '1d' ../verify/files/terraform.json
-          sed -i '8,$d' ../verify/files/terraform.json
-          sleep 60
-      - name: Setup InSpec
-        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-      - name: Run InSpec tests
-        working-directory: ./terraform/verify
-        env: 
-          CHEF_LICENSE: accept-no-persist
-        run: inspec exec .
-      - name: Terraform Destroy
-        if: ${{ always() }}
-        working-directory: ./terraform/test
-        run: terraform destroy --auto-approve
+          terraform output -no-color -json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
+      - name: Run Ansible
+        working-directory: ./terraform/ansible
+        run: |
+          export IP=$(cat inventory)
+          ssh ec2-user@$IP whoami
+          apt install ansible -y
+          ansible-playbook playbook.yml -u ec2-user -i inventory
+      # - name: Setup InSpec
+      #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+      # - name: Run InSpec tests
+      #   working-directory: ./terraform/verify
+      #   env: 
+      #     CHEF_LICENSE: accept-no-persist
+      #   run: inspec exec .
+      # - name: Terraform Destroy
+      #   if: ${{ always() }}
+      #   working-directory: ./terraform/test
+      #   run: terraform destroy --auto-approve
   deploy:
     name: deploy
     needs: [test, build, system]
@@ -86,3 +90,17 @@ jobs:
     
     steps:
       -  run: echo "deploy stage"
+
+      # - name: Terraform Apply
+      #   working-directory: ./terraform/test
+      #   # env:
+      #   #   TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+      #   #   TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
+      #   run: |
+      #     ls ~/.ssh
+      #     terraform init
+      #     terraform apply --auto-approve
+      #     terraform output --json > ../verify/files/terraform.json
+      #     sed -i '1d' ../verify/files/terraform.json
+      #     sed -i '8,$d' ../verify/files/terraform.json
+      #     sleep 30
