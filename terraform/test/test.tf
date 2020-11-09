@@ -10,10 +10,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "ssh_private_key" {
-  type = string
-  description = "the ssh key to aws instance"
-}
+# variable "ssh_private_key" {
+#   type = string
+#   description = "the ssh key to aws instance"
+# }
 
 resource "aws_instance" "test" {
   ami                  = "ami-069098bd859abd964"
