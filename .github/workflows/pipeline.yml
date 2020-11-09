@@ -66,6 +66,7 @@ jobs:
           terraform output --json > ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
+          sleep 60
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Run InSpec tests
