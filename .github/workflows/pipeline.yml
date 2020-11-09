@@ -72,6 +72,7 @@ jobs:
         run: |
           ls
           export IP=$(cat inventory)
+          cat inventory
           ssh ec2-user@$IP whoami
           apt install ansible -y
           ansible-playbook playbook.yml -u ec2-user -i inventory
