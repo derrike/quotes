@@ -60,9 +60,10 @@ resource "aws_instance" "test" {
     }
   }
 
-  provisioner "local-exec" {
-    command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
-  }
+  # provisioner "local-exec" {
+  #   # command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
+  #   command = "echo 'hi' > asdf.txt"
+  # }
 
   tags = {
     name = "quotes-test"
