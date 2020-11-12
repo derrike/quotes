@@ -34,21 +34,22 @@ resource "aws_instance" "test" {
   #   systemctl start quotes.service
   # EOF
 
-  # provisioner "local-exec" {
-  #   command = "nc -v ${self.public_ip} 3000"
-  # }
+
+
   provisioner "remote-exec" {
-    inline = [
-      "sudo mkdir /var/lib/quotes",
-      "cd /var/lib/quotes",
-      "sudo aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .",
-      "sudo tar -xvf deployment.tar.gz",
-      "sudo rm deployment.tar.gz",
-      "echo '${file("../common/systemd-quotes.service")}' | sudo tee /lib/systemd/system/quotes.service",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl enable quotes.service",
-      "sudo systemctl start quotes.service"
-    ]
+    inline = [ "echo 'connected!" ]
+
+    # inline = [
+    #   "sudo mkdir /var/lib/quotes",
+    #   "cd /var/lib/quotes",
+    #   "sudo aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .",
+    #   "sudo tar -xvf deployment.tar.gz",
+    #   "sudo rm deployment.tar.gz",
+    #   "echo '${file("../common/systemd-quotes.service")}' | sudo tee /lib/systemd/system/quotes.service",
+    #   "sudo systemctl daemon-reload",
+    #   "sudo systemctl enable quotes.service",
+    #   "sudo systemctl start quotes.service"
+    # ]
 
     connection {
       type        = "ssh"
@@ -57,6 +58,10 @@ resource "aws_instance" "test" {
       private_key = file("~/.ssh/id_rsa")
       # private_key = var.ssh_private_key
     }
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
   }
 
   tags = {

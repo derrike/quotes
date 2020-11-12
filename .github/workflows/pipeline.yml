@@ -50,15 +50,14 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          name: id_rsa # optional
+          name: id_rsa
           known_hosts: "stubbed"
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
         working-directory: ./terraform/test
-        # env:
-        #   TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-        #   TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           ls ~/.ssh
           terraform init
@@ -67,16 +66,13 @@ jobs:
           sed -i '1d' ../ansible/terraform.json
           sed -i '8,$d' ../ansible/terraform.json
           cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
-      - name: Run Ansible
-        working-directory: ./terraform/ansible
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: False
-        run: |
-          ls
-          export IP=$(cat inventory)
-          cat inventory
-          ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami
-          ansible-playbook playbook.yml -u ec2-user -i inventory
+      # - name: Run Ansible
+      #   working-directory: ./terraform/ansible
+      #   env:
+      #     ANSIBLE_HOST_KEY_CHECKING: False
+      #   run: |
+
+      #     ansible-playbook playbook.yml -u ec2-user -i inventory
       # - name: Setup InSpec
       #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       # - name: Run InSpec tests
@@ -110,3 +106,10 @@ jobs:
       #     sed -i '1d' ../verify/files/terraform.json
       #     sed -i '8,$d' ../verify/files/terraform.json
       #     sleep 30
+
+
+  # ssh stuff
+  # ls
+  # export IP=$(cat inventory)
+  # cat inventory
+  # ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami

@@ -1,8 +1,49 @@
 ---
 - name: configure quote server
   hosts: all
+  become: yes
   tasks:
-    - name: create a file
+    - name: create directory for quotes
       file:
-        path: /home/ec2-user/ansible.txt
-        state: touch
+        path: /var/lib/quotes
+        state: directory
+    - name: copy s3 bucket quotes artifact
+      command: 
+        cmd: aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz /tmp/deployment.tar.gz
+        creates: /tmp/deployment.tar.gz
+    - name: untar quotes code
+      unarchive:
+        src: /tmp/deployment.tar.gz
+        dest: /var/lib/quotes
+        remote_src: yes
+    - name: install quotes systemd unit file
+      template:
+        src: quotes.j2
+        dest: /etc/systemd/system/quotes.service
+    - name: start quotes service
+      systemd:
+        name: quotes
+        daemon_reload: yes
+        state: started
+    - name: enable quotes service for automatic start
+      service:
+        name: quotes
+        enabled: yes
+
+        
+    # - name: copy s3 bucket quotes artifact
+    #   aws_s3:
+    #     bucket: dan16-quote-bucket # required. Bucket name.
+    #     object: deployment.tar.gz
+    #     dest: /var/lib/quotes
+    #     mode: get
+
+    #   "sudo mkdir /var/lib/quotes",
+    #   "cd /var/lib/quotes",
+    #   "sudo aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz .",
+    #   "sudo tar -xvf deployment.tar.gz",
+    #   "sudo rm deployment.tar.gz",
+    #   "echo '${file("../common/systemd-quotes.service")}' | sudo tee /lib/systemd/system/quotes.service",
+    #   "sudo systemctl daemon-reload",
+    #   "sudo systemctl enable quotes.service",
+    #   "sudo systemctl start quotes.service"
