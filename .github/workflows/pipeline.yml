@@ -56,23 +56,25 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
         working-directory: ./terraform/test
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           ls ~/.ssh
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../ansible/terraform.json
+          head -1 ../ansible/terraform.json
+          head -8 ../ansible/terraform.json
           sed -i '1d' ../ansible/terraform.json
           sed -i '8,$d' ../ansible/terraform.json
           cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
-      # - name: Run Ansible
-      #   working-directory: ./terraform/ansible
-      #   env:
-      #     ANSIBLE_HOST_KEY_CHECKING: False
-      #   run: |
-
-      #     ansible-playbook playbook.yml -u ec2-user -i inventory
+          export TEST_ENV="this is a test"
+      - name: Run Ansible
+        working-directory: ./terraform/ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_FORCE_COLOR: True
+        run: |
+          echo $TEST_ENV
+          ansible-playbook playbook.yml -u ec2-user -i inventory
       # - name: Setup InSpec
       #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       # - name: Run InSpec tests

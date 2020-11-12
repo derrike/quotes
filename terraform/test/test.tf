@@ -37,7 +37,7 @@ resource "aws_instance" "test" {
 
 
   provisioner "remote-exec" {
-    inline = [ "echo 'connected!" ]
+    inline = [ "echo 'connected!'" ]
 
     # inline = [
     #   "sudo mkdir /var/lib/quotes",
@@ -61,8 +61,10 @@ resource "aws_instance" "test" {
   }
 
   # provisioner "local-exec" {
-  #   # command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
-  #   command = "echo 'hi' > asdf.txt"
+  #   command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
+  #   environment = {
+  #     ANSIBLE_HOST_KEY_CHECKING = "False"
+  #   }
   # }
 
   tags = {
