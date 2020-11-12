@@ -60,6 +60,11 @@ resource "aws_instance" "test" {
     }
   }
 
+
+  provisioner "local-exec" {
+    command = "export TF_INSTANCE_IP=${self.public_ip}"
+  }
+
   # provisioner "local-exec" {
   #   command = "ansible-playbook -u ec2-user -i ${self.public_ip}, ../ansible/playbook.yml"
   #   environment = {
