@@ -61,6 +61,8 @@ jobs:
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../ansible/terraform.json
+          export IP=$(terraform output --json | jq .instance_ip_addr.value)
+          echo $IP
           echo 'first head'
           head -1 ../ansible/terraform.json
           echo 'second head'
