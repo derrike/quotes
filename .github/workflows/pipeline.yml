@@ -61,13 +61,15 @@ jobs:
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../ansible/terraform.json
+          echo 'first head'
           head -1 ../ansible/terraform.json
-          head -8 ../ansible/terraform.json
+          echo 'second head'
+          head -9 ../ansible/terraform.json
           sed -i '1d' ../ansible/terraform.json
           sed -i '8,$d' ../ansible/terraform.json
           cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
           export TEST_ENV="this is a test"
-      - name: Run Ansible
+      - name: Run Ansible Config
         working-directory: ./terraform/ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
@@ -75,6 +77,14 @@ jobs:
         run: |
           echo $TEST_ENV
           ansible-playbook playbook.yml -u ec2-user -i inventory
+      - name: Run Ansible Verify
+        working-directory: ./terraform/ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_FORCE_COLOR: True
+        run: |
+          echo $TEST_ENV
+          ansible-playbook verify.yml -u ec2-user -i inventory
       # - name: Setup InSpec
       #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       # - name: Run InSpec tests
