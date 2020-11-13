@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      -  run: echo "deploy stage"
+      -  run: echo "deploy stage test"
 
       # - name: Terraform Apply
       #   working-directory: ./terraform/test
