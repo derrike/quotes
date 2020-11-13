@@ -3,6 +3,7 @@
   hosts: all
   become: yes
   tasks:
+    - debug: var=ansible_facts
     - name: create directory for quotes
       file:
         path: /var/lib/quotes

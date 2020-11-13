@@ -4,37 +4,41 @@
   connection: localhost
   gather_facts: false
   tasks:
+    - name: register ip
+      set_fact:
+        aws_ip: "{{ lookup('file', 'inventory') }}"
+    - debug: var=aws_ip
     - name: perform get request on the quote server
       uri:
-        url: http://34.226.153.14:3000
+        url: http://{{ aws_ip }}:3000
         return_content: yes
         method: GET
-      register: _url
+      register: _return
     - name: site should be up and search text should be found
       assert:
         that:
-          - _url.status == 200
-          - _url.content is search("Please do a search")
+          - _return.status == 200
+          - _return.content is search("Please do a search")
 
     - name: search for money quote
       uri:
-        url: http://34.226.153.14:3000/search?search_string=money
+        url: http://{{ aws_ip }}:3000/search?search_string=money
         return_content: yes
         method: GET
-      register: _url
+      register: _return
     - name: quote about thanksgiving should be found
       assert:
         that:
-          - _url.content is search("My restaurants are never opened on Thanksgiving")
+          - _return.content is search("My restaurants are never opened on Thanksgiving")
 
     - name: search for missing quote
       uri:
-        url: http://34.226.153.14:3000/search?search_string=pqtqrrlmot
+        url: http://{{ aws_ip }}:3000/search?search_string=pqtqrrlmot
         return_content: yes
         method: GET
-      register: _url
+      register: _return
     - name: no matching quote should be found
       assert:
         that:
-          - _url.content is search("No matching quote was found")
+          - _return.content is search("No matching quote was found")
 
