@@ -59,11 +59,13 @@ jobs:
       - name: Terraform Apply
         working-directory: ./terraform/test
         run: |
+          aws ec2 authorize-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
+          aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
       - name: Run InSpec tests
         working-directory: ./terraform/verify
         env: 
