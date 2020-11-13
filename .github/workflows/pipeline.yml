@@ -51,7 +51,7 @@ jobs:
         with:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
-          known_hosts: ""
+          known_hosts: none
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
