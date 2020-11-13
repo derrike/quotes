@@ -60,33 +60,29 @@ jobs:
           ls ~/.ssh
           terraform init
           terraform apply --auto-approve
-          terraform output --json > ../ansible/terraform.json
+          terraform output --json > ../verify/files/terraform.json
           export AWS_IP=$(terraform output --json | head -n -2 | tail -n +2 | jq .instance_ip_addr.value)
           echo "Does this work?: $AWS_IP"
           echo 'first head'
-          head -1 ../ansible/terraform.json
+          head -1 ../verify/files/terraform.json
           echo 'second head'
-          head -9 ../ansible/terraform.json
-          sed -i '1d' ../ansible/terraform.json
-          sed -i '8,$d' ../ansible/terraform.json
-          cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
-          export TEST_ENV="this is a test"
+          head -9 ../verify/files/terraform.json
+          sed -i '1d' ../verify/files/terraform.json
+          sed -i '8,$d' ../verify/files/terraform.json
+          cat ../verify/files/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
+
       - name: Ansible Config
         working-directory: ./terraform/ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
           ANSIBLE_FORCE_COLOR: True
-        run: |
-          echo $TEST_ENV
-          ansible-playbook playbook.yml -u ec2-user -i inventory
+        run: ansible-playbook playbook.yml -u ec2-user -i inventory
       - name: Ansible Verify
         working-directory: ./terraform/ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
           ANSIBLE_FORCE_COLOR: True
-        run: |
-          echo $TEST_ENV
-          ansible-playbook verify.yml -u ec2-user -i inventory
+        run: ansible-playbook verify.yml -u ec2-user -i inventory
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Run InSpec tests
