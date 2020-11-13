@@ -7,7 +7,7 @@
     - name: register ip
       set_fact:
         aws_ip: "{{ lookup('file', 'inventory') }}"
-    - debug: var=aws_ip
+
     - name: perform get request on the quote server
       uri:
         url: http://{{ aws_ip }}:3000

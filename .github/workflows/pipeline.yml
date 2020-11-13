@@ -71,7 +71,7 @@ jobs:
           sed -i '8,$d' ../ansible/terraform.json
           cat ../ansible/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
           export TEST_ENV="this is a test"
-      - name: Run Ansible Config
+      - name: Ansible Config
         working-directory: ./terraform/ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
@@ -79,7 +79,7 @@ jobs:
         run: |
           echo $TEST_ENV
           ansible-playbook playbook.yml -u ec2-user -i inventory
-      - name: Run Ansible Verify
+      - name: Ansible Verify
         working-directory: ./terraform/ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
@@ -87,13 +87,13 @@ jobs:
         run: |
           echo $TEST_ENV
           ansible-playbook verify.yml -u ec2-user -i inventory
-      # - name: Setup InSpec
-      #   run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
-      # - name: Run InSpec tests
-      #   working-directory: ./terraform/verify
-      #   env: 
-      #     CHEF_LICENSE: accept-no-persist
-      #   run: inspec exec .
+      - name: Setup InSpec
+        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+      - name: Run InSpec tests
+        working-directory: ./terraform/verify
+        env: 
+          CHEF_LICENSE: accept-no-persist
+        run: inspec exec .
       # - name: Terraform Destroy
       #   if: ${{ always() }}
       #   working-directory: ./terraform/test
