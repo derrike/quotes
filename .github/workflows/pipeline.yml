@@ -71,10 +71,10 @@ jobs:
         env: 
           CHEF_LICENSE: accept-no-persist
         run: inspec exec .
-      # - name: Terraform Destroy
-      #   if: ${{ always() }}
-      #   working-directory: ./terraform/test
-      #   run: terraform destroy --auto-approve
+      - name: Terraform Destroy
+        if: ${{ always() }}
+        working-directory: ./terraform/test
+        run: terraform destroy --auto-approve
   deploy:
     name: deploy
     needs: [test, build, system]
