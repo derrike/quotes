@@ -61,7 +61,7 @@ jobs:
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../ansible/terraform.json
-          export AWS_IP=$(terraform output --json | head -n -1 | tail -n +2 | jq .instance_ip_addr.value)
+          export AWS_IP=$(terraform output --json | head -n -2 | tail -n +2 | jq .instance_ip_addr.value)
           echo "Does this work?: $AWS_IP"
           echo 'first head'
           head -1 ../ansible/terraform.json
