@@ -51,22 +51,15 @@ jobs:
         with:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
-          known_hosts: "stubbed"
+          known_hosts: ""
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply
         working-directory: ./terraform/test
         run: |
-          ls ~/.ssh
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json
-          export AWS_IP=$(terraform output --json | head -n -2 | tail -n +2 | jq .instance_ip_addr.value)
-          echo "Does this work?: $AWS_IP"
-          echo 'first head'
-          head -1 ../verify/files/terraform.json
-          echo 'second head'
-          head -9 ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
           cat ../verify/files/terraform.json | jq .instance_ip_addr.value -M | tr -d \" > ../ansible/inventory
@@ -123,3 +116,11 @@ jobs:
   # export IP=$(cat inventory)
   # cat inventory
   # ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami
+
+
+          #   export AWS_IP=$(terraform output --json | head -n -2 | tail -n +2 | jq .instance_ip_addr.value)
+          # echo "Does this work?: $AWS_IP"
+          # echo 'first head'
+          # head -1 ../verify/files/terraform.json
+          # echo 'second head'
+          # head -9 ../verify/files/terraform.json

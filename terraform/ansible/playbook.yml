@@ -3,24 +3,37 @@
   hosts: all
   become: yes
   tasks:
-    - debug: var=ansible_facts
+    - name: install quotes systemd unit file
+      template:
+        src: quotes.j2
+        dest: /etc/systemd/system/quotes.service
+    - name: try to copy bucket
+      aws_s3:
+        bucket: dan16-quote-bucket
+        object: deployment.tar.gz
+        dest: /tmp/deployment.tar.gz
+        mode: get
+        overwrite: different
+      register: _tar
+    - name: stop quotes service
+      service:
+        name: quotes
+        state: stopped
+      when: _tar.changed
+    - name: remove quotes directory
+      file:
+        path: /var/lib/quotes
+        state: absent
+      when: _tar.changed
     - name: create directory for quotes
       file:
         path: /var/lib/quotes
         state: directory
-    - name: copy s3 bucket quotes artifact
-      command: 
-        cmd: aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz /tmp/deployment.tar.gz
-        creates: /tmp/deployment.tar.gz
     - name: untar quotes code
       unarchive:
         src: /tmp/deployment.tar.gz
         dest: /var/lib/quotes
         remote_src: yes
-    - name: install quotes systemd unit file
-      template:
-        src: quotes.j2
-        dest: /etc/systemd/system/quotes.service
     - name: start quotes service
       systemd:
         name: quotes
@@ -31,6 +44,10 @@
         name: quotes
         enabled: yes
 
+    # - name: copy s3 bucket quotes artifact
+    #   command: 
+    #     cmd: aws s3 cp s3://dan16-quote-bucket/deployment.tar.gz /tmp/deployment.tar.gz
+    #     creates: /tmp/deployment.tar.gz
         
     # - name: copy s3 bucket quotes artifact
     #   aws_s3:

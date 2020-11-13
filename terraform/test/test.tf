@@ -37,7 +37,11 @@ resource "aws_instance" "test" {
 
 
   provisioner "remote-exec" {
-    inline = [ "echo 'connected!'" ]
+    inline = [ 
+      "curl -O https://bootstrap.pypa.io/get-pip.py",
+      "sudo python get-pip.py",
+      "sudo pip install botocore boto3"
+    ]
 
     # inline = [
     #   "sudo mkdir /var/lib/quotes",
