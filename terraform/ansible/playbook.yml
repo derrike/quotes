@@ -2,6 +2,7 @@
 - name: configure quote server
   hosts: all
   become: yes
+  gather_facts: false
   tasks:
     - name: install quotes systemd unit file
       template:
