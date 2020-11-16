@@ -55,16 +55,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Setup InSpec
+        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Setup SSH
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
           known_hosts: none
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-      - name: Setup InSpec
-        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Allow SSH
         run: |
           aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
@@ -106,16 +106,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Setup InSpec
+        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Setup SSH
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
           known_hosts: none
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-      - name: Setup InSpec
-        run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
       - name: Allow SSH
         run: |
           aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
