@@ -16,6 +16,7 @@ resource "aws_instance" "quotes-prod" {
   key_name             = "dan16"
   security_groups      = ["ssh3000"]
   iam_instance_profile = "tfQuotesEC2S3Profile"
+  # user_data          = <<EOF EOF
 
   provisioner "remote-exec" {
     inline = [

@@ -1,9 +1,7 @@
-# copyright: 2018, The Authors
 
 # load data from Terraform output
-content = inspec.profile.file("terraform.json")
+content = inspec.profile.file('terraform.json')
 params = JSON.parse(content)
-# INSTANCE_IP = ENV['AWS_IP']
 
 # store ip in variable
 INSTANCE_IP = params['instance_ip_addr']['value']
