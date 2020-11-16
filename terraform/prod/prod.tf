@@ -51,7 +51,7 @@ data "aws_eip" "quotes_eip" {
 }
 
 resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_instance.prod.id
+  instance_id   = aws_instance.quotes-prod.id
   allocation_id = data.aws_eip.quotes_eip.id
 }
 

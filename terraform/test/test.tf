@@ -44,5 +44,5 @@ resource "aws_instance" "quotes-test" {
 }
 
 output "instance_ip_addr" {
-  value = aws_instance.test.public_ip
+  value = aws_instance.quotes-test.public_ip
 }
