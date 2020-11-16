@@ -59,15 +59,17 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
           known_hosts: none
-        run: echo "hello world!"
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+      - name: Allow SSH
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
+          aws ec2 authorize-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
       - name: Terraform Apply
         working-directory: ./terraform/test
         run: |
-          aws ec2 authorize-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json
@@ -78,7 +80,7 @@ jobs:
         env: 
           CHEF_LICENSE: accept-no-persist
         run: inspec exec .
-      - name: Revoke ssh access
+      - name: Revoke SSH
         if: ${{ always() }}
         run: aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
 
@@ -111,21 +113,27 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Setup InSpec
         run: curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+      - name: Allow SSH
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
+          aws ec2 authorize-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
       - name: Terraform Apply
         working-directory: ./terraform/prod
         run: |
-          aws ec2 authorize-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
           terraform init
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
           sed -i '8,$d' ../verify/files/terraform.json
-          aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
       - name: Run InSpec tests
         working-directory: ./terraform/verify
         env: 
           CHEF_LICENSE: accept-no-persist
         run: inspec exec .
+      - name: Revoke SSH
+        if: ${{ always() }}
+        run: aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
+
 
       # - name: Terraform Apply
       #   working-directory: ./terraform/test
