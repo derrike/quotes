@@ -14,7 +14,7 @@ resource "aws_instance" "quotes-prod" {
   ami                  = "ami-069098bd859abd964"
   instance_type        = "t2.micro"
   key_name             = "dan16"
-  security_groups      = ["ssh3000"]
+  security_groups      = ["tfQuotesSGNodeJS3000"]
   iam_instance_profile = "tfQuotesEC2S3Profile"
   # user_data          = <<EOF EOF
 
