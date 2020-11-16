@@ -1,0 +1,9 @@
+Dump json file here from terraform. It will look something like this:
+
+{
+  "instance_ip_addr": {
+    "sensitive": false,
+    "type": "string",
+    "value": "169.254.169.254"
+  }
+}
