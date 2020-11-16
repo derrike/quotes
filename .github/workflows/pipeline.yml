@@ -85,11 +85,10 @@ jobs:
       - name: Revoke SSH
         if: ${{ always() }}
         run: aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
-
-      # - name: Terraform Destroy
-      #   if: ${{ always() }}
-      #   working-directory: ./terraform/test
-      #   run: terraform destroy --auto-approve
+      - name: Terraform Destroy
+        if: ${{ always() }}
+        working-directory: ./terraform/test
+        run: terraform destroy --auto-approve
   deploy:
     name: deploy
     needs: [test, build, system]
@@ -135,33 +134,3 @@ jobs:
       - name: Revoke SSH
         if: ${{ always() }}
         run: aws ec2 revoke-security-group-ingress --group-id sg-074e243dbe08df0e0 --protocol tcp --port 22 --cidr 0.0.0.0/0
-
-
-      # - name: Terraform Apply
-      #   working-directory: ./terraform/test
-      #   # env:
-      #   #   TF_VAR_ssh_private_key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-      #   #   TF_VAR_ssh_fake_key: ${{ secrets.AWS_SSH_FAKE_KEY }}
-      #   run: |
-      #     ls ~/.ssh
-      #     terraform init
-      #     terraform apply --auto-approve
-      #     terraform output --json > ../verify/files/terraform.json
-      #     sed -i '1d' ../verify/files/terraform.json
-      #     sed -i '8,$d' ../verify/files/terraform.json
-      #     sleep 30
-
-
-  # ssh stuff
-  # ls
-  # export IP=$(cat inventory)
-  # cat inventory
-  # ssh -o "StrictHostKeyChecking=no" ec2-user@$IP whoami
-
-
-          #   export AWS_IP=$(terraform output --json | head -n -2 | tail -n +2 | jq .instance_ip_addr.value)
-          # echo "Does this work?: $AWS_IP"
-          # echo 'first head'
-          # head -1 ../verify/files/terraform.json
-          # echo 'second head'
-          # head -9 ../verify/files/terraform.json
