@@ -10,7 +10,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_instance" "test" {
+resource "aws_instance" "quotes-test" {
   ami                  = "ami-069098bd859abd964"
   instance_type        = "t2.micro"
   key_name             = "dan16"
