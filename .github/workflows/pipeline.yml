@@ -73,6 +73,7 @@ jobs:
         working-directory: ./terraform/test
         run: |
           terraform init
+          terraform destroy --auto-approve
           terraform apply --auto-approve
           terraform output --json > ../verify/files/terraform.json
           sed -i '1d' ../verify/files/terraform.json
