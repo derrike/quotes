@@ -32,6 +32,26 @@ resource "aws_iam_policy_attachment" "tfQuotesEC2S3Attach" {
   policy_arn = aws_iam_policy.tfQuotesEC2S3Policy.arn
 }
 
+resource "aws_security_group" "tfQuotesSGNodeJS3000" {
+  name        = "tfQuotesSGNodeJS3000"
+  description = "Allow port 3000 for node web app"
+
+  ingress {
+    description = "Port 3000 for Node Web App"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_eip" "tfQuotesEIP" {
     tags = {
         server = "quotes"
