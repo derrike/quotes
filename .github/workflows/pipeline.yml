@@ -34,8 +34,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - run: |
-          tar -cvf deployment.tar app/data app/serverside
+      - name: bundle app to tarball
+        working-directory: ./app
+        run: |
+          tar -cvf deployment.tar data serverside
           gzip deployment.tar
           aws s3 cp deployment.tar.gz s3://dan16-quote-bucket/deployment.tar.gz
 
