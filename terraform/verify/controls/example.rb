@@ -18,3 +18,7 @@ end
 describe http("http://#{INSTANCE_IP}:3000/search?search_string=pqtqrrlmot") do
   its('body') { should match /No matching quote was found/ }
 end
+
+describe http("http://#{INSTANCE_IP}:3000/search?search_string=represents+something+bigger") do
+  its('body') { should match /A bug is never just a mistake./ }
+end
