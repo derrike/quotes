@@ -10,26 +10,26 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_iam_role" "tfQuotesEC2S3Role" {
-  name               = "tfQuotesEC2S3Role"
+resource "aws_iam_role" "tfQuotesEC2Role" {
+  name               = "tfQuotesEC2Role"
   assume_role_policy = file("aws-policy-ec2-assume-role.json")
 }
 
-resource "aws_iam_instance_profile" "tfQuotesEC2S3Profile" {
-  name = "tfQuotesEC2S3Profile"
-  role = aws_iam_role.tfQuotesEC2S3Role.name
+resource "aws_iam_instance_profile" "tfQuotesEC2Profile" {
+  name = "tfQuotesEC2Profile"
+  role = aws_iam_role.tfQuotesEC2Role.name
 }
 
-resource "aws_iam_policy" "tfQuotesEC2S3Policy" {
-  name        = "tfQuotesEC2S3Policy"
+resource "aws_iam_policy" "tfQuotesEC2Policy" {
+  name        = "tfQuotesEC2Policy"
   description = "A test policy"
-  policy      = file("aws-policy-s3-bucket.json")
+  policy      = file("aws-policy-ec2-quotes.json")
 }
 
-resource "aws_iam_policy_attachment" "tfQuotesEC2S3Attach" {
-  name       = "tfQuotesEC2S3Attach"
-  roles      = [aws_iam_role.tfQuotesEC2S3Role.name]
-  policy_arn = aws_iam_policy.tfQuotesEC2S3Policy.arn
+resource "aws_iam_policy_attachment" "tfQuotesEC2Attach" {
+  name       = "tfQuotesEC2Attach"
+  roles      = [aws_iam_role.tfQuotesEC2Role.name]
+  policy_arn = aws_iam_policy.tfQuotesEC2Policy.arn
 }
 
 resource "aws_security_group" "tfQuotesSGNodeJS3000" {

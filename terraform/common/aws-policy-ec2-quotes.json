@@ -1,0 +1,27 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": ["s3:ListBucket"],
+        "Resource": ["arn:aws:s3:::dan16-quote-bucket"]
+      },
+      {
+        "Effect": "Allow",
+        "Action": ["s3:GetObject"],
+        "Resource": ["arn:aws:s3:::dan16-quote-bucket/*"]
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+            "secretsmanager:GetResourcePolicy",
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:DescribeSecret",
+            "secretsmanager:ListSecretVersionIds"
+        ],
+        "Resource": [
+            "arn:aws:secretsmanager:us-east-1:880444423280:secret:quotes*"
+        ]
+      }
+    ]
+}
