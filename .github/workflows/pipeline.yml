@@ -65,12 +65,14 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           name: id_rsa
           known_hosts: none
-      - name: Allow SSH
-        run: |
-          aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
-          aws ec2 authorize-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
+      # - name: Allow SSH
+      #   run: |
+      #     aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
+      #     aws ec2 authorize-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
       - name: Terraform Apply
         working-directory: ./terraform/test
+        env:
+          TF_VAR_GH_SECRET: ${{ secrets.GH_SECRET }}
         run: |
           terraform init
           terraform destroy --auto-approve
@@ -83,13 +85,13 @@ jobs:
         env: 
           CHEF_LICENSE: accept-no-persist
         run: inspec exec .
-      - name: Revoke SSH
-        if: ${{ always() }}
-        run: aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
-      - name: Terraform Destroy
-        if: ${{ always() }}
-        working-directory: ./terraform/test
-        run: terraform destroy --auto-approve
+      # - name: Revoke SSH
+      #   if: ${{ always() }}
+      #   run: aws ec2 revoke-security-group-ingress --group-name "tfQuotesSGNodeJS3000" --protocol tcp --port 22 --cidr 0.0.0.0/0
+      # - name: Terraform Destroy
+      #   if: ${{ always() }}
+      #   working-directory: ./terraform/test
+      #   run: terraform destroy --auto-approve
 
   deploy:
     name: deploy
