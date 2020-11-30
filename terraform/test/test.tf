@@ -34,7 +34,6 @@ resource "aws_instance" "quotes-test" {
       "sudo aws s3 cp s3://dan16-quote-bucket/quotes_all.csv.gpg .",
       "export AWS_SECRET=$(aws secretsmanager get-secret-value --secret-id quotes/db/pass --region us-east-1 --query SecretString --output text | jq -r .db_encryption_pass)",
       "sudo gpg --batch --yes --passphrase \"$${AWS_SECRET}${var.GH_SECRET}\" -o quotes_all.csv -d quotes_all.csv.gpg",
-      "echo \"$${AWS_SECRET}${var.GH_SECRET}\" > /home/ec2-user/asdf.txt",
       "echo '${file("../common/systemd-quotes.service")}' | sudo tee /etc/systemd/system/quotes.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable quotes.service",
